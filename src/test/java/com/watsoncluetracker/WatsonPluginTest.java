@@ -96,9 +96,16 @@ public class WatsonPluginTest
         final Logger logger = (Logger) LoggerFactory.getLogger(Logger.ROOT_LOGGER_NAME);
         logger.setLevel(Level.DEBUG);
 
-        when(itemManager.getItemComposition(anyInt())).thenAnswer(invocation -> {
+        when(itemManager.getItemComposition(anyInt())).thenAnswer(invocation ->
+        {
             ItemComposition itemComposition = mock(ItemComposition.class);
-            if ((Integer) invocation.getArgument(0) == 19858)
+            if ((Integer) invocation.getArgument(0) == 2677)
+            {
+                when(itemComposition.getName()).thenReturn("Clue scroll (easy)");
+            } else if ((Integer) invocation.getArgument(0) == 2801)
+            {
+                when(itemComposition.getName()).thenReturn("Clue scroll (medium)");
+            } else if ((Integer) invocation.getArgument(0) == 19858)
             {
                 when(itemComposition.getName()).thenReturn("Clue scroll (hard)");
             } else if ((Integer) invocation.getArgument(0) == 19835) {
@@ -165,6 +172,21 @@ public class WatsonPluginTest
         inventoryChange(-1);
 
         testClues(true, true, true, false);
+    }
+
+    @Test
+    public void testHandOverMultipleClues() {
+        plugin.npcDialogStateChanged(NpcDialogState.noDialog());
+        setClues(false, false, true, true);
+        inventoryChange(2677, 2801);
+
+        NpcDialogState select_an_option = NpcDialogState.options("Select an Option", "Hand over easy clue.", "Hand over medium clue.", "Hand over all.", "Cancel.");
+        plugin.npcDialogStateChanged(select_an_option);
+        plugin.optionSelected(select_an_option, "Hand over all.");
+
+        inventoryChange();
+
+        testClues(true, true, true, true);
     }
 
     @Test
