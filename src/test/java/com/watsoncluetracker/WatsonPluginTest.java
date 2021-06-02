@@ -87,7 +87,6 @@ public class WatsonPluginTest
     @Before
     public void before() {
         Guice.createInjector(BoundFieldModule.of(this)).injectMembers(this);
-        plugin = Mockito.spy(plugin);
 
         Player mockPlayer = mock(Player.class);
         // This is the worst name I could think of.
