@@ -155,7 +155,8 @@ public class WatsonPlugin extends Plugin
             setWatsonHasClue(ClueTier.HARD, false);
             setWatsonHasClue(ClueTier.ELITE, false);
             log.debug("Watson gave you a master clue.");
-        } else if (state.type == NpcDialogState.NpcDialogType.OPTIONS && option != null && option.startsWith("Hand over ") && option.endsWith(" clue.")) {
+        } else if (state.type == NpcDialogState.NpcDialogType.OPTIONS && option != null && option.startsWith("Hand over ")) {
+            // Options can be "Hand over hard clue." or "Hand over all.".
             checkForCluesHandedToWatson = true;
         }
     }
