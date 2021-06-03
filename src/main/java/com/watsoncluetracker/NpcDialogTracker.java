@@ -30,7 +30,7 @@ import java.util.function.Consumer;
  * need to register it to the eventbus and mousemanager for it to work.
  */
 @Slf4j
-public class NpcDialogTracker implements MouseListener
+public class NpcDialogTracker
 {
     @Inject
     private Client client;
@@ -57,17 +57,15 @@ public class NpcDialogTracker implements MouseListener
 //        System.out.println(System.currentTimeMillis() + ", onMenuOptionClicked" + event.getMenuOption() + ", " + event.getMenuAction() + ", " + event.getMenuTarget() + " " + event.getId() + " " + event.getMenuAction() + " " + WidgetInfo.TO_GROUP(event.getWidgetId()) + " " + WidgetInfo.TO_CHILD(event.getWidgetId()));
         if (WidgetInfo.TO_GROUP(event.getWidgetId()) == WidgetID.DIALOG_OPTION_GROUP_ID && WidgetInfo.TO_CHILD(event.getWidgetId()) == 1) {
             Widget widget = client.getWidget(WidgetID.DIALOG_OPTION_GROUP_ID, 1);
-            Point point = lastMouseClick;
+            int dynamicChildIndex = event.getActionParam();
             Widget[] dynamicChildren = widget.getDynamicChildren();
-            // Skip [0], which is "Select an Option". This one overlaps with the top option so it is actually possible for the mouse to be on it otherwise.
-            for (int i = 1; i < dynamicChildren.length; i++)
+            Widget dynamicChild = dynamicChildren[dynamicChildIndex];
+            if (dynamicChild == null)
             {
-                Widget dynamicChild = dynamicChildren[i];
-                if (dynamicChild.getBounds().contains(point)) {
-                    optionSelected(lastNpcDialogState, dynamicChild.getText());
-                    return;
-                }
+                log.debug("dynamic child option was null, index " + dynamicChildIndex + " total children: " + dynamicChildren.length);
+                return; // not sure why this would happen.
             }
+            optionSelected(lastNpcDialogState, dynamicChild.getText());
         } else if (WidgetInfo.TO_GROUP(event.getWidgetId()) == WidgetID.DIALOG_NPC_GROUP_ID && WidgetInfo.TO_CHILD(event.getWidgetId()) == 3) {
             optionSelected(lastNpcDialogState, null);
         } else if (WidgetInfo.TO_GROUP(event.getWidgetId()) == WidgetID.DIALOG_PLAYER_GROUP_ID && WidgetInfo.TO_CHILD(event.getWidgetId()) == 3) {
@@ -254,51 +252,6 @@ public class NpcDialogTracker implements MouseListener
     public void reset()
     {
         lastNpcDialogState = null;
-    }
-
-    @Override
-    public MouseEvent mouseClicked(MouseEvent mouseEvent)
-    {
-        return mouseEvent;
-    }
-
-    private volatile Point lastMouseClick = null;
-
-    @Override
-    public MouseEvent mousePressed(MouseEvent mouseEvent)
-    {
-        lastMouseClick = mouseEvent.getPoint();
-        return mouseEvent;
-    }
-
-    @Override
-    public MouseEvent mouseReleased(MouseEvent mouseEvent)
-    {
-        return mouseEvent;
-    }
-
-    @Override
-    public MouseEvent mouseEntered(MouseEvent mouseEvent)
-    {
-        return mouseEvent;
-    }
-
-    @Override
-    public MouseEvent mouseExited(MouseEvent mouseEvent)
-    {
-        return mouseEvent;
-    }
-
-    @Override
-    public MouseEvent mouseDragged(MouseEvent mouseEvent)
-    {
-        return mouseEvent;
-    }
-
-    @Override
-    public MouseEvent mouseMoved(MouseEvent mouseEvent)
-    {
-        return mouseEvent;
     }
 
     @RequiredArgsConstructor

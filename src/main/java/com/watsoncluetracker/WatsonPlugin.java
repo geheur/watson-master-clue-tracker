@@ -15,7 +15,6 @@ import net.runelite.client.config.ConfigManager;
 import net.runelite.client.eventbus.EventBus;
 import net.runelite.client.eventbus.Subscribe;
 import net.runelite.client.game.ItemManager;
-import net.runelite.client.input.MouseManager;
 import net.runelite.client.plugins.Plugin;
 import net.runelite.client.plugins.PluginDescriptor;
 import net.runelite.client.ui.overlay.OverlayManager;
@@ -64,9 +63,6 @@ public class WatsonPlugin extends Plugin
 
     @Inject
     private NpcDialogTracker npcDialogTracker;
-
-    @Inject
-    private MouseManager mouseManager;
 
     // item ids in inventory. Doesn't store order or quantity.
     private Collection<Integer> lastInventory = Collections.emptyList();
@@ -130,7 +126,6 @@ public class WatsonPlugin extends Plugin
         eventBus.register(npcDialogTracker);
         npcDialogTracker.setStateChangedListener(this::npcDialogStateChanged);
         npcDialogTracker.setOptionSelectedListener(this::optionSelected);
-        mouseManager.registerMouseListener(npcDialogTracker);
     }
 
     @Override
@@ -138,7 +133,6 @@ public class WatsonPlugin extends Plugin
         overlayManager.remove(watsonOverlay);
         overlayManager.remove(watsonWidgetItemOverlay);
         eventBus.unregister(npcDialogTracker);
-        mouseManager.unregisterMouseListener(npcDialogTracker);
     }
 
     void npcDialogStateChanged(NpcDialogState state) {
