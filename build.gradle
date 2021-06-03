@@ -10,7 +10,7 @@ repositories {
 	mavenCentral()
 }
 
-def runeLiteVersion = '1.7.10'
+def runeLiteVersion = '1.7.11.1'
 
 dependencies {
 	compileOnly group: 'net.runelite', name:'client', version: runeLiteVersion
@@ -26,8 +26,8 @@ dependencies {
 	testCompile group: 'com.google.inject.extensions', name: 'guice-testlib', version: '4.1.0'
 }
 
-group = 'com.example'
-version = '1.0-SNAPSHOT'
+group = 'com.watsoncluetracker'
+version = '1.0'
 sourceCompatibility = '1.8'
 
 tasks.withType(JavaCompile) {

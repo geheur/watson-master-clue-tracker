@@ -46,7 +46,9 @@ public class WatsonWidgetItemOverlay extends WidgetItemOverlay
         if (clueTier == null) return;
 
         Rectangle bounds = widgetItem.getCanvasBounds();
-        graphics.setColor(plugin.watsonHasClue(clueTier) ? Color.GREEN : Color.RED);
-        graphics.drawString("Watson", (int) bounds.getX(), (int) (bounds.getY() + bounds.getHeight()));
+        if (plugin.watsonHasClue(clueTier)) {
+            graphics.setColor(new Color(0x59a8eb));
+            graphics.drawString("W", (int) bounds.getX(), (int) (bounds.getY() + bounds.getHeight()));
+        }
     }
 }

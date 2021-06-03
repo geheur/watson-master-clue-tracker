@@ -1,4 +1,5 @@
 package com.watsoncluetracker;
+
 import com.google.inject.Inject;
 import lombok.NonNull;
 import lombok.RequiredArgsConstructor;
@@ -11,11 +12,8 @@ import net.runelite.api.widgets.Widget;
 import net.runelite.api.widgets.WidgetID;
 import net.runelite.api.widgets.WidgetInfo;
 import net.runelite.client.eventbus.Subscribe;
-import net.runelite.client.input.MouseListener;
 
 import javax.annotation.Nullable;
-import java.awt.*;
-import java.awt.event.MouseEvent;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
@@ -174,7 +172,7 @@ public class NpcDialogTracker
 
     @Subscribe
     public void onGameTick(GameTick gameTick) {
-        log.debug("Game tick: {}", client.getTickCount());
+//        log.debug("Game tick: {}", client.getTickCount());
         optionSelected = false;
 
         NpcDialogState npcDialogState = getNpcDialogState();
