@@ -64,7 +64,7 @@ public class NpcDialogTracker
                 return; // not sure why this would happen.
             }
             optionSelected(lastNpcDialogState, dynamicChild.getText());
-        } else if (WidgetInfo.TO_GROUP(event.getWidgetId()) == WidgetID.DIALOG_NPC_GROUP_ID && WidgetInfo.TO_CHILD(event.getWidgetId()) == 3) {
+        } else if (WidgetInfo.TO_GROUP(event.getWidgetId()) == WidgetID.DIALOG_NPC_GROUP_ID && WidgetInfo.TO_CHILD(event.getWidgetId()) == 4) {
             optionSelected(lastNpcDialogState, null);
         } else if (WidgetInfo.TO_GROUP(event.getWidgetId()) == WidgetID.DIALOG_PLAYER_GROUP_ID && WidgetInfo.TO_CHILD(event.getWidgetId()) == 3) {
             optionSelected(lastNpcDialogState, null);
@@ -143,8 +143,8 @@ public class NpcDialogTracker
 
     private NpcDialogState.NpcDialogType getNpcDialogType()
     {
-        Widget npcDialog = client.getWidget(WidgetInfo.DIALOG_NPC);
-        if (npcDialog != null && !npcDialog.isHidden())
+		Widget npcDialog = client.getWidget(231, 0);
+		if (npcDialog != null && !npcDialog.isHidden())
         {
             return NpcDialogState.NpcDialogType.NPC;
         }
@@ -208,7 +208,7 @@ public class NpcDialogTracker
                     }
                 }
             }
-            w = client.getWidget(WidgetID.DIALOG_NPC_GROUP_ID, 3);
+            w = client.getWidget(WidgetID.DIALOG_NPC_GROUP_ID, 4);
             if (w != null && !w.isHidden() && "Please wait...".equals(w.getText()))
             {
                 optionSelected(lastNpcDialogState, null);
