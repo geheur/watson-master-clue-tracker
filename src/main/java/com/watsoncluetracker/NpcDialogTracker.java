@@ -26,11 +26,17 @@ import java.util.function.Consumer;
 
 /**
  * need to register it to the eventbus and mousemanager for it to work.
+ *
+ * Not working: meslayer (I'm assuming, cause I don't know what meslayer actually is), sprite (partial).
  */
 @Slf4j
 public class NpcDialogTracker
 {
-    @Inject
+	private static final int WIDGET_CHILD_ID_DIALOG_PLAYER_CLICK_HERE_TO_CONTINUE = 4;
+	private static final int WIDGET_CHILD_ID_DIALOG_NPC_CLICK_HERE_TO_CONTINUE = 4;
+	private static final int WIDGET_CHILD_ID_DIALOG_PLAYER_NAME = 3; // For some reason there is no WidgetInfo for this despite there being an (innaccessible to me) widgetid for this in WidgetID.
+
+	@Inject
     private Client client;
 
     private Consumer<NpcDialogState> npcDialogStateChanged;
@@ -53,8 +59,10 @@ public class NpcDialogTracker
     public void onMenuOptionClicked(MenuOptionClicked event)
     {
 //        System.out.println(System.currentTimeMillis() + ", onMenuOptionClicked" + event.getMenuOption() + ", " + event.getMenuAction() + ", " + event.getMenuTarget() + " " + event.getId() + " " + event.getMenuAction() + " " + WidgetInfo.TO_GROUP(event.getWidgetId()) + " " + WidgetInfo.TO_CHILD(event.getWidgetId()));
-        if (WidgetInfo.TO_GROUP(event.getWidgetId()) == WidgetID.DIALOG_OPTION_GROUP_ID && WidgetInfo.TO_CHILD(event.getWidgetId()) == 1) {
-            Widget widget = client.getWidget(WidgetID.DIALOG_OPTION_GROUP_ID, 1);
+		int groupId = WidgetInfo.TO_GROUP(event.getWidgetId());
+		int childId = WidgetInfo.TO_CHILD(event.getWidgetId());
+		if (event.getId() == WidgetInfo.DIALOG_OPTION_OPTIONS.getId()) {
+            Widget widget = client.getWidget(WidgetInfo.DIALOG_OPTION_OPTIONS);
             int dynamicChildIndex = event.getActionParam();
             Widget[] dynamicChildren = widget.getDynamicChildren();
             Widget dynamicChild = dynamicChildren[dynamicChildIndex];
@@ -64,11 +72,11 @@ public class NpcDialogTracker
                 return; // not sure why this would happen.
             }
             optionSelected(lastNpcDialogState, dynamicChild.getText());
-        } else if (WidgetInfo.TO_GROUP(event.getWidgetId()) == WidgetID.DIALOG_NPC_GROUP_ID && WidgetInfo.TO_CHILD(event.getWidgetId()) == 4) {
+        } else if (groupId == WidgetID.DIALOG_NPC_GROUP_ID && childId == WIDGET_CHILD_ID_DIALOG_NPC_CLICK_HERE_TO_CONTINUE) {
             optionSelected(lastNpcDialogState, null);
-        } else if (WidgetInfo.TO_GROUP(event.getWidgetId()) == WidgetID.DIALOG_PLAYER_GROUP_ID && WidgetInfo.TO_CHILD(event.getWidgetId()) == 3) {
+        } else if (groupId == WidgetID.DIALOG_PLAYER_GROUP_ID && childId == WIDGET_CHILD_ID_DIALOG_PLAYER_CLICK_HERE_TO_CONTINUE) {
             optionSelected(lastNpcDialogState, null);
-        } else if (WidgetInfo.TO_GROUP(event.getWidgetId()) == WidgetID.DIALOG_SPRITE_GROUP_ID && WidgetInfo.TO_CHILD(event.getWidgetId()) == 0) {
+        } else if (groupId == WidgetID.DIALOG_SPRITE_GROUP_ID && childId == 0) {
             optionSelected(lastNpcDialogState, null);
         }
     }
@@ -91,8 +99,8 @@ public class NpcDialogTracker
             }
             case PLAYER:
             {
-                Widget nameWidget = client.getWidget(WidgetID.DIALOG_PLAYER_GROUP_ID, 2);
-                Widget textWidget = client.getWidget(WidgetID.DIALOG_PLAYER_GROUP_ID, 4);
+                Widget nameWidget = client.getWidget(WidgetID.DIALOG_PLAYER_GROUP_ID, WIDGET_CHILD_ID_DIALOG_PLAYER_NAME);
+                Widget textWidget = client.getWidget(WidgetInfo.DIALOG_PLAYER_TEXT);
 
                 String name = (nameWidget != null) ? nameWidget.getText() : null;
                 String text = (textWidget != null) ? textWidget.getText() : null;
@@ -104,7 +112,7 @@ public class NpcDialogTracker
             {
                 String text = null;
 
-                Widget optionsWidget = client.getWidget(WidgetID.DIALOG_OPTION_GROUP_ID, 1);
+                Widget optionsWidget = client.getWidget(WidgetInfo.DIALOG_OPTION_OPTIONS);
                 List<String> options = null;
                 if (optionsWidget != null) {
                     options = new ArrayList<>();
@@ -143,7 +151,7 @@ public class NpcDialogTracker
 
     private NpcDialogState.NpcDialogType getNpcDialogType()
     {
-		Widget npcDialog = client.getWidget(231, 0);
+		Widget npcDialog = client.getWidget(WidgetID.DIALOG_NPC_GROUP_ID, 0);
 		if (npcDialog != null && !npcDialog.isHidden())
         {
             return NpcDialogState.NpcDialogType.NPC;
@@ -189,7 +197,7 @@ public class NpcDialogTracker
     {
         if (event.getScriptId() == 2153)
         {
-            Widget w = client.getWidget(WidgetID.DIALOG_OPTION_GROUP_ID, 1);
+            Widget w = client.getWidget(WidgetInfo.DIALOG_OPTION_OPTIONS);
             if (w != null && !w.isHidden())
             {
                 for (int i = 0; i < w.getDynamicChildren().length; i++)
@@ -208,12 +216,12 @@ public class NpcDialogTracker
                     }
                 }
             }
-            w = client.getWidget(WidgetID.DIALOG_NPC_GROUP_ID, 4);
+            w = client.getWidget(WidgetID.DIALOG_NPC_GROUP_ID, WIDGET_CHILD_ID_DIALOG_NPC_CLICK_HERE_TO_CONTINUE);
             if (w != null && !w.isHidden() && "Please wait...".equals(w.getText()))
             {
                 optionSelected(lastNpcDialogState, null);
             }
-            w = client.getWidget(WidgetID.DIALOG_PLAYER_GROUP_ID, 3);
+            w = client.getWidget(WidgetID.DIALOG_PLAYER_GROUP_ID, WIDGET_CHILD_ID_DIALOG_PLAYER_CLICK_HERE_TO_CONTINUE);
             if (w != null && !w.isHidden() && "Please wait...".equals(w.getText()))
             {
                 optionSelected(lastNpcDialogState, null);
