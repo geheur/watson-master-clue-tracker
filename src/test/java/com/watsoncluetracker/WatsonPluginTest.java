@@ -189,9 +189,15 @@ public class WatsonPluginTest
         testClues(true, true, true, true);
     }
 
-    @Test
-    public void testReceiveMasterClue() {
-        plugin.npcDialogStateChanged(NpcDialogState.noDialog());
+	@Test
+	public void testWatsonCheckDialogue() {
+		plugin.npcDialogStateChanged(NpcDialogState.npc("Watson", "I still need an easy clue, a medium clue and an elite<br>clue from you before I give you a master clue scroll."));
+		testClues(false, false, true, false);
+	}
+
+	@Test
+	public void testReceiveMasterClue() {
+		plugin.npcDialogStateChanged(NpcDialogState.noDialog());
         setClues(true, true, false, false);
         inventoryChange(-1);
 

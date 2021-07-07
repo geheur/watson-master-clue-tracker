@@ -161,10 +161,10 @@ public class WatsonPlugin extends Plugin
 
         if ("Watson".equals(state.name) && (state.text.startsWith("I still need") || state.text.startsWith("Nice work ")))
         {
-            boolean easyClue = state.text.indexOf("easy clue") == -1;
-            boolean mediumClue = state.text.indexOf("medium clue") == -1;
-            boolean hardClue = state.text.indexOf("hard clue") == -1;
-            boolean eliteClue = state.text.indexOf("elite clue") == -1;
+            boolean easyClue = state.text.indexOf("easy") == -1;
+            boolean mediumClue = state.text.indexOf("medium") == -1;
+            boolean hardClue = state.text.indexOf("hard") == -1;
+            boolean eliteClue = state.text.indexOf("elite") == -1;
             setWatsonHasClue(ClueTier.EASY, easyClue);
             setWatsonHasClue(ClueTier.MEDIUM, mediumClue);
             setWatsonHasClue(ClueTier.HARD, hardClue);
