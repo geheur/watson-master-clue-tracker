@@ -26,6 +26,7 @@ import java.util.Collection;
 import java.util.Collections;
 import java.util.List;
 import java.util.stream.Collectors;
+import net.runelite.client.util.Text;
 
 @PluginDescriptor(
         name = "Watson Clue Tracker",
@@ -142,7 +143,8 @@ public class WatsonPlugin extends Plugin
     }
 
     void optionSelected(NpcDialogState state, String option) {
-        if (state.type == NpcDialogState.NpcDialogType.NPC && state.text != null && state.text.startsWith("Nice work") && state.text.endsWith(", I've had one of each lower tier<br>clue scroll from you."))
+    	String text = Text.sanitizeMultilineText(state.text);
+		if (state.type == NpcDialogState.NpcDialogType.NPC && text != null && text.startsWith("Nice work") && text.endsWith(", I've had one of each lower tier clue scroll from you."))
         {
             setWatsonHasClue(ClueTier.EASY, false);
             setWatsonHasClue(ClueTier.MEDIUM, false);
