@@ -58,10 +58,9 @@ public class NpcDialogTracker
     @Subscribe
     public void onMenuOptionClicked(MenuOptionClicked event)
     {
-//        System.out.println(System.currentTimeMillis() + ", onMenuOptionClicked" + event.getMenuOption() + ", " + event.getMenuAction() + ", " + event.getMenuTarget() + " " + event.getId() + " " + event.getMenuAction() + " " + WidgetInfo.TO_GROUP(event.getWidgetId()) + " " + WidgetInfo.TO_CHILD(event.getWidgetId()));
 		int groupId = WidgetInfo.TO_GROUP(event.getWidgetId());
 		int childId = WidgetInfo.TO_CHILD(event.getWidgetId());
-		if (event.getId() == WidgetInfo.DIALOG_OPTION_OPTIONS.getId()) {
+		if (event.getWidgetId() == WidgetInfo.DIALOG_OPTION_OPTIONS.getId()) {
             Widget widget = client.getWidget(WidgetInfo.DIALOG_OPTION_OPTIONS);
             int dynamicChildIndex = event.getActionParam();
             Widget[] dynamicChildren = widget.getDynamicChildren();
