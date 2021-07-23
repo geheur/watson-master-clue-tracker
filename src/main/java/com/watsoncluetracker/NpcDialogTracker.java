@@ -32,11 +32,11 @@ import java.util.function.Consumer;
 @Slf4j
 public class NpcDialogTracker
 {
-	private static final int WIDGET_CHILD_ID_DIALOG_PLAYER_CLICK_HERE_TO_CONTINUE = 4;
-	private static final int WIDGET_CHILD_ID_DIALOG_NPC_CLICK_HERE_TO_CONTINUE = 4;
-	private static final int WIDGET_CHILD_ID_DIALOG_PLAYER_NAME = 3; // For some reason there is no WidgetInfo for this despite there being an (innaccessible to me) widgetid for this in WidgetID.
+    private static final int WIDGET_CHILD_ID_DIALOG_PLAYER_CLICK_HERE_TO_CONTINUE = 4;
+    private static final int WIDGET_CHILD_ID_DIALOG_NPC_CLICK_HERE_TO_CONTINUE = 4;
+    private static final int WIDGET_CHILD_ID_DIALOG_PLAYER_NAME = 3; // For some reason there is no WidgetInfo for this despite there being an (innaccessible to me) widgetid for this in WidgetID.
 
-	@Inject
+    @Inject
     private Client client;
 
     private Consumer<NpcDialogState> npcDialogStateChanged;
@@ -58,10 +58,9 @@ public class NpcDialogTracker
     @Subscribe
     public void onMenuOptionClicked(MenuOptionClicked event)
     {
-//        System.out.println(System.currentTimeMillis() + ", onMenuOptionClicked" + event.getMenuOption() + ", " + event.getMenuAction() + ", " + event.getMenuTarget() + " " + event.getId() + " " + event.getMenuAction() + " " + WidgetInfo.TO_GROUP(event.getWidgetId()) + " " + WidgetInfo.TO_CHILD(event.getWidgetId()));
-		int groupId = WidgetInfo.TO_GROUP(event.getWidgetId());
-		int childId = WidgetInfo.TO_CHILD(event.getWidgetId());
-		if (event.getId() == WidgetInfo.DIALOG_OPTION_OPTIONS.getId()) {
+        int groupId = WidgetInfo.TO_GROUP(event.getWidgetId());
+        int childId = WidgetInfo.TO_CHILD(event.getWidgetId());
+        if (event.getWidgetId() == WidgetInfo.DIALOG_OPTION_OPTIONS.getId()) {
             Widget widget = client.getWidget(WidgetInfo.DIALOG_OPTION_OPTIONS);
             int dynamicChildIndex = event.getActionParam();
             Widget[] dynamicChildren = widget.getDynamicChildren();
@@ -151,8 +150,8 @@ public class NpcDialogTracker
 
     private NpcDialogState.NpcDialogType getNpcDialogType()
     {
-		Widget npcDialog = client.getWidget(WidgetID.DIALOG_NPC_GROUP_ID, 0);
-		if (npcDialog != null && !npcDialog.isHidden())
+        Widget npcDialog = client.getWidget(WidgetID.DIALOG_NPC_GROUP_ID, 0);
+        if (npcDialog != null && !npcDialog.isHidden())
         {
             return NpcDialogState.NpcDialogType.NPC;
         }

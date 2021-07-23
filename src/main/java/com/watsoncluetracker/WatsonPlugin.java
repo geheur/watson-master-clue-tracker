@@ -9,6 +9,7 @@ import net.runelite.api.Client;
 import net.runelite.api.InventoryID;
 import net.runelite.api.ItemContainer;
 import net.runelite.api.MessageNode;
+import net.runelite.api.Varbits;
 import net.runelite.api.events.CommandExecuted;
 import net.runelite.api.events.ItemContainerChanged;
 import net.runelite.client.config.ConfigManager;
@@ -71,27 +72,29 @@ public class WatsonPlugin extends Plugin
 
     enum ClueTier
     {
-        EASY("easyClueStored", 0x32a836),
-        MEDIUM("mediumClueStored", 0x3fcc8f),
-        HARD("hardClueStored", 0xa641ba),
-        ELITE("eliteClueStored", 0xc4b847)
+        EASY("easyClueStored", new Color(0x32a836), new Color(0x32a836).darker()),
+        MEDIUM("mediumClueStored", new Color(0x3fcc8f), new Color(0x3fcc8f).darker()),
+        HARD("hardClueStored", new Color(0xa641ba), new Color(0xa641ba)),
+        ELITE("eliteClueStored", new Color(0xc4b847), new Color(0xc4b847).darker())
         ;
 
         private final String configKey;
-        private final Color color;
+        private final Color colorTransparent;
+        private final Color colorOpaque;
 
-        ClueTier(String configKey, int color) {
+        ClueTier(String configKey, Color colorTransparent, Color colorOpaque) {
             this.configKey = configKey;
-            this.color = new Color(color);
+            this.colorTransparent = colorTransparent;
+            this.colorOpaque = colorOpaque;
         }
 
         public String getConfigKey() {
             return configKey;
         }
 
-        public Color getColor()
+        public Color getColor(boolean transparentChatbox)
         {
-            return color;
+            return transparentChatbox ? colorTransparent : colorOpaque;
         }
 
         public static ClueTier getClueTier(String clueName)
@@ -143,8 +146,8 @@ public class WatsonPlugin extends Plugin
     }
 
     void optionSelected(NpcDialogState state, String option) {
-    	String text = Text.sanitizeMultilineText(state.text);
-		if (state.type == NpcDialogState.NpcDialogType.NPC && text != null && text.startsWith("Nice work") && text.endsWith(", I've had one of each lower tier clue scroll from you."))
+        String text = Text.sanitizeMultilineText(state.text);
+        if (state.type == NpcDialogState.NpcDialogType.NPC && text != null && text.startsWith("Nice work") && text.endsWith(", I've had one of each lower tier clue scroll from you."))
         {
             setWatsonHasClue(ClueTier.EASY, false);
             setWatsonHasClue(ClueTier.MEDIUM, false);
@@ -215,11 +218,12 @@ public class WatsonPlugin extends Plugin
         }
         else
         {
+            boolean transparent = client.isResized() && client.getVar(Varbits.TRANSPARENT_CHATBOX) == 1;
             String message = "Watson needs:" + separator;
-            if (!hasEasy) message += ColorUtil.wrapWithColorTag("easy", ClueTier.EASY.getColor()) + separator;
-            if (!hasMedium) message += ColorUtil.wrapWithColorTag("medium", ClueTier.MEDIUM.getColor()) + separator;
-            if (!hasHard) message += ColorUtil.wrapWithColorTag("hard", ClueTier.HARD.getColor()) + separator;
-            if (!hasElite) message += ColorUtil.wrapWithColorTag("elite", ClueTier.ELITE.getColor()) + separator;
+            if (!hasEasy) message += ColorUtil.wrapWithColorTag("easy", ClueTier.EASY.getColor(transparent)) + separator;
+            if (!hasMedium) message += ColorUtil.wrapWithColorTag("medium", ClueTier.MEDIUM.getColor(transparent)) + separator;
+            if (!hasHard) message += ColorUtil.wrapWithColorTag("hard", ClueTier.HARD.getColor(transparent)) + separator;
+            if (!hasElite) message += ColorUtil.wrapWithColorTag("elite", ClueTier.ELITE.getColor(transparent)) + separator;
             return message;
         }
     }
