@@ -153,7 +153,14 @@ public class WatsonPlugin extends Plugin
             setWatsonHasClue(ClueTier.MEDIUM, false);
             setWatsonHasClue(ClueTier.HARD, false);
             setWatsonHasClue(ClueTier.ELITE, false);
-            log.debug("Watson gave you a master clue.");
+            log.debug("Watson has been given one of each clue type");
+        } else if (state.type == NpcDialogState.NpcDialogType.NPC && text != null && text.endsWith(Text.removeTags("Finish it or discard it, I don't care which.")))
+        {
+            setWatsonHasClue(ClueTier.EASY, true);
+            setWatsonHasClue(ClueTier.MEDIUM, true);
+            setWatsonHasClue(ClueTier.HARD, true);
+            setWatsonHasClue(ClueTier.ELITE, true);
+            log.debug("Watson is waiting for you to finish your current master clue.");
         } else if (state.type == NpcDialogState.NpcDialogType.OPTIONS && option != null && option.startsWith("Hand over ")) {
             // Options can be "Hand over hard clue." or "Hand over all.".
             checkForCluesHandedToWatson = true;
