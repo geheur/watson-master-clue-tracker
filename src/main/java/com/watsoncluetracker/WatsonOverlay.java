@@ -2,6 +2,7 @@ package com.watsoncluetracker;
 
 import com.watsoncluetracker.WatsonPlugin.ClueTier;
 import net.runelite.api.Client;
+import net.runelite.api.ItemID;
 import net.runelite.api.MenuEntry;
 import net.runelite.api.widgets.WidgetInfo;
 import net.runelite.client.game.ItemManager;
@@ -47,7 +48,7 @@ public class WatsonOverlay extends Overlay
 
         String itemName = itemManager.getItemComposition(itemId).getName();
         ClueTier clueTier = ClueTier.getClueTier(itemName);
-        if (clueTier == null) return null;
+        if (clueTier == null && itemId != ItemID.CLUE_SCROLL_MASTER) return null;
 
         tooltipManager.add(new Tooltip(plugin.generateWatsonNeedsText("</br>")));
 

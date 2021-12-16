@@ -184,7 +184,7 @@ public class NpcDialogTracker
 
         NpcDialogState npcDialogState = getNpcDialogState();
         if (!Objects.equals(npcDialogState, lastNpcDialogState)) {
-            log.debug("npc dialog changed: {} previous: {} (game tick: {})", npcDialogState, lastNpcDialogState, client.getTickCount());
+            log.debug("{} {} npc dialog changed: {} previous: {} (game tick: {})", client.getTickCount(), System.currentTimeMillis(), npcDialogState, lastNpcDialogState);
 
             if (npcDialogStateChanged != null) npcDialogStateChanged.accept(npcDialogState);
         }
@@ -247,9 +247,9 @@ public class NpcDialogTracker
         if (optionSelected) return;
         optionSelected = true;
         if (state.type == NpcDialogState.NpcDialogType.OPTIONS) {
-            log.debug("option selected: \"" + option + "\" " + state);
+            log.debug("{} {} option selected: \"{}\" {}", client.getTickCount(), System.currentTimeMillis(), option, state);
         } else {
-            log.debug("clicked here to continue: " + state);
+            log.debug("{} {} clicked here to continue: {}", client.getTickCount(), System.currentTimeMillis(), state);
         }
         if (npcDialogOptionSelected != null) npcDialogOptionSelected.accept(state, option);
     }
