@@ -76,15 +76,10 @@ public class WatsonPluginTest
     @Inject
     private WatsonPlugin plugin;
 
-    private NpcDialogState.NpcDialogType type;
-    private String name;
-    private String text;
-    private List<String> options = Collections.emptyList();
-    private boolean clickedHereToContinue;
-
     private Map<String, Object> configManagerMock = new HashMap<>();
+	private int gameTick = 0;
 
-    @Before
+	@Before
     public void before() {
         Guice.createInjector(BoundFieldModule.of(this)).injectMembers(this);
 
@@ -92,8 +87,9 @@ public class WatsonPluginTest
         // This is the worst name I could think of.
         when(mockPlayer.getName()).thenReturn("bla" + " " + "183" + "&nbsp;" + "BLA");
         when(client.getLocalPlayer()).thenReturn(mockPlayer);
+		when(client.getTickCount()).thenAnswer(invocation -> gameTick);
 
-        final Logger logger = (Logger) LoggerFactory.getLogger(Logger.ROOT_LOGGER_NAME);
+		final Logger logger = (Logger) LoggerFactory.getLogger(Logger.ROOT_LOGGER_NAME);
         logger.setLevel(Level.DEBUG);
 
         when(itemManager.getItemComposition(anyInt())).thenAnswer(invocation ->
@@ -130,10 +126,6 @@ public class WatsonPluginTest
         plugin.npcDialogStateChanged(NpcDialogState.noDialog());
         setClues(false, false, true, true);
 
-        name = null;
-        text = null;
-        options = Collections.emptyList();
-        clickedHereToContinue = false;
         plugin.npcDialogStateChanged(NpcDialogState.npc("Watson", "I still need a hard clue and an elite clue from you<br>before I give you a master clue scroll."));
 
         testClues(true, true, false, false);
@@ -205,12 +197,31 @@ public class WatsonPluginTest
         plugin.npcDialogStateChanged(state);
         plugin.optionSelected(state, null);
 
+        gameTick++;
+
         inventoryChange(-1, 19835);
 
         testClues(false, false, false, false);
     }
 
-    private ItemContainer container = Mockito.mock(ItemContainer.class);
+	@Test
+	public void testUnableToReceiveMasterClue() {
+		plugin.npcDialogStateChanged(NpcDialogState.noDialog());
+		setClues(true, true, false, false);
+		inventoryChange(-1);
+
+		NpcDialogState state = NpcDialogState.npc("Watson", "Nice work " + client.getLocalPlayer().getName() + ", I've had one of each lower tier<br>clue scroll from you.");
+		plugin.npcDialogStateChanged(state);
+		plugin.optionSelected(state, null);
+
+		gameTick++;
+
+//		inventoryChange(-1, 19835);
+
+		testClues(true, true, true, true);
+	}
+
+	private ItemContainer container = Mockito.mock(ItemContainer.class);
 
     private void inventoryChange(int... itemIds)
     {

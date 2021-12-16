@@ -3,6 +3,7 @@ package com.watsoncluetracker;
 import com.google.inject.Inject;
 import com.google.inject.Provides;
 import com.watsoncluetracker.NpcDialogTracker.NpcDialogState;
+import java.util.ArrayList;
 import lombok.extern.slf4j.Slf4j;
 import net.runelite.api.ChatMessageType;
 import net.runelite.api.Client;
@@ -69,8 +70,10 @@ public class WatsonPlugin extends Plugin
     // item ids in inventory. Doesn't store order or quantity.
     private Collection<Integer> lastInventory = Collections.emptyList();
     private boolean checkForCluesHandedToWatson = false;
+    /** checking the tick number is needed here because it's possible for no inventory update to happen, and that does not generate an event in which we can reset this variable like we can for checkForCluesHandedToWatson. */
+	private int checkForMasterClueHandedToPlayer = -1;
 
-    enum ClueTier
+	enum ClueTier
     {
         EASY("easyClueStored", new Color(0x32a836), new Color(0x32a836).darker()),
         MEDIUM("mediumClueStored", new Color(0x3fcc8f), new Color(0x3fcc8f).darker()),
@@ -149,11 +152,7 @@ public class WatsonPlugin extends Plugin
         String text = Text.sanitizeMultilineText(state.text);
         if (state.type == NpcDialogState.NpcDialogType.NPC && text != null && text.startsWith("Nice work") && text.endsWith(", I've had one of each lower tier clue scroll from you."))
         {
-            setWatsonHasClue(ClueTier.EASY, false);
-            setWatsonHasClue(ClueTier.MEDIUM, false);
-            setWatsonHasClue(ClueTier.HARD, false);
-            setWatsonHasClue(ClueTier.ELITE, false);
-            log.debug("Watson gave you a master clue.");
+        	checkForMasterClueHandedToPlayer = client.getTickCount();
         } else if (state.type == NpcDialogState.NpcDialogType.OPTIONS && option != null && option.startsWith("Hand over ")) {
             // Options can be "Hand over hard clue." or "Hand over all.".
             checkForCluesHandedToWatson = true;
@@ -190,12 +189,32 @@ public class WatsonPlugin extends Plugin
 
         log.debug("inventory changed: {} -> {} (game tick: {})", lastInventory, newInventory, client.getTickCount());
 
+        if (client.getTickCount() == checkForMasterClueHandedToPlayer || client.getTickCount() == checkForMasterClueHandedToPlayer + 1) { // can be either same tick or next tick depending on timing or something idk exactly.
+			List<Integer> newInventoryCopy = new ArrayList<>(newInventory);
+			newInventoryCopy.removeAll(lastInventory); // leaves items that were added.
+			for (Integer itemId : newInventoryCopy)
+			{
+				if (itemId == -1) continue;
+				String name = itemManager.getItemComposition(itemId).getName();
+				if ("Clue scroll (master)".equals(name)) {
+					setWatsonHasClue(ClueTier.EASY, false);
+					setWatsonHasClue(ClueTier.MEDIUM, false);
+					setWatsonHasClue(ClueTier.HARD, false);
+					setWatsonHasClue(ClueTier.ELITE, false);
+					log.debug("Watson gave you a master clue.");
+				} else {
+					log.debug("Watson did not give you a master clue.");
+				}
+			}
+		}
+
         if (checkForCluesHandedToWatson) {
             checkForCluesHandedToWatson = false;
 
             lastInventory.removeAll(newInventory); // leaves items that were removed.
             for (Integer itemId : lastInventory)
             {
+				if (itemId == -1) continue;
                 String name = itemManager.getItemComposition(itemId).getName();
                 ClueTier clueTier = ClueTier.getClueTier(name);
                 if (clueTier != null)
