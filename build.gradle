@@ -10,7 +10,7 @@ repositories {
 	mavenCentral()
 }
 
-def runeLiteVersion = '1.8.9'
+def runeLiteVersion = '1.8.13.1'
 
 dependencies {
 	compileOnly group: 'net.runelite', name:'client', version: runeLiteVersion
@@ -27,7 +27,7 @@ dependencies {
 }
 
 group = 'com.watsoncluetracker'
-version = '1.0.6'
+version = '1.0.7'
 sourceCompatibility = '1.8'
 
 tasks.withType(JavaCompile) {
