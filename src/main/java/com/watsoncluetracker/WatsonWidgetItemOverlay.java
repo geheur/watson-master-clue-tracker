@@ -1,34 +1,28 @@
 package com.watsoncluetracker;
 
 import com.google.inject.Inject;
-import com.watsoncluetracker.WatsonPlugin.ClueTier;
-import net.runelite.api.Client;
 import net.runelite.api.widgets.WidgetItem;
-import net.runelite.client.config.ConfigManager;
 import net.runelite.client.game.ItemManager;
 import net.runelite.client.game.ItemVariationMapping;
+import net.runelite.client.ui.FontManager;
 import net.runelite.client.ui.overlay.WidgetItemOverlay;
+import net.runelite.client.ui.overlay.components.TextComponent;
 
 import java.awt.*;
 
 public class WatsonWidgetItemOverlay extends WidgetItemOverlay
 {
     @Inject
-    private Client client;
-
-    @Inject
-    private WatsonConfig config;
-
-    @Inject
     private ItemManager itemManager;
 
-    @Inject
-    private ConfigManager configManager;
+    private final WatsonPlugin plugin;
+    private final WatsonConfig config;
 
     @Inject
-    private WatsonPlugin plugin;
-
+    WatsonWidgetItemOverlay(WatsonPlugin watsonPlugin, WatsonConfig config)
     {
+        this.plugin = watsonPlugin;
+        this.config = config;
         showOnInventory();
         showOnBank();
     }
@@ -36,19 +30,32 @@ public class WatsonWidgetItemOverlay extends WidgetItemOverlay
     @Override
     public void renderItemOverlay(Graphics2D graphics, int itemId, WidgetItem widgetItem)
     {
-        if (!config.showClueScrollItemOverlay()) return;
+        if(!config.showClueScrollItemOverlay())
+        {
+            return;
+        }
 
         int baseItemId = ItemVariationMapping.map(itemId);
-        if (baseItemId != 713) return;
+        if(baseItemId != WatsonPlugin.CLUE_SCROLL_ITEM_BASE_ID)
+        {
+            return;
+        }
 
-        String clueName = itemManager.getItemComposition(itemId).getName();
-        ClueTier clueTier = ClueTier.getClueTier(clueName);
-        if (clueTier == null) return;
+        String itemName = itemManager.getItemComposition(itemId).getName();
+        ClueTier clueTier = ClueTier.getClueTier(itemName);
+        if(clueTier == null)
+        {
+            return;
+        }
 
-        Rectangle bounds = widgetItem.getCanvasBounds();
-        if (plugin.watsonHasClue(clueTier)) {
-            graphics.setColor(new Color(0x59a8eb));
-            graphics.drawString("W", (int) bounds.getX(), (int) (bounds.getY() + bounds.getHeight()));
+        if(plugin.watsonHasClue(clueTier)) {
+            graphics.setFont(FontManager.getRunescapeSmallFont());
+            final Rectangle bounds = widgetItem.getCanvasBounds();
+            final TextComponent textComponent = new TextComponent();
+            textComponent.setPosition(new Point(bounds.x, bounds.y + (int)bounds.getHeight()));
+            textComponent.setText("W");
+            textComponent.setColor(new Color(0x59a8eb));
+            textComponent.render(graphics);
         }
     }
 }
