@@ -19,7 +19,7 @@ import net.runelite.client.util.ColorUtil;
 
 @PluginDescriptor(
 	name = "Watson Clue Tracker",
-	description = "track clues watson is holding on to for you",
+	description = "Tracks which clues Watson has",
 	tags = {"clue", "watson", "master"}
 )
 @Slf4j
