@@ -121,7 +121,7 @@ public class WatsonPlugin extends Plugin
 		}
 		else
 		{
-			boolean transparent = client.isResized() && client.getVar(Varbits.TRANSPARENT_CHATBOX) == 1;
+			boolean transparent = client.isResized() && client.getVarbitValue(Varbits.TRANSPARENT_CHATBOX) == 1;
 			String message = "Watson needs:" + separator;
 			if (!hasEasy) message += ColorUtil.wrapWithColorTag("easy", ClueTier.EASY.getColor(transparent)) + separator;
 			if (!hasMedium) message += ColorUtil.wrapWithColorTag("medium", ClueTier.MEDIUM.getColor(transparent)) + separator;
