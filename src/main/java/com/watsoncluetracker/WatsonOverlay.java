@@ -74,7 +74,7 @@ public class WatsonOverlay extends Overlay
 			return null;
 		}
 
-		String itemName = itemManager.getItemComposition(itemId).getName();
+		String itemName = itemManager.getItemComposition(itemId).getMembersName();
 		ClueTier clueTier = ClueTier.getClueTier(itemName);
 		if(clueTier == null && itemId != ItemID.CLUE_SCROLL_MASTER)
 		{

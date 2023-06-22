@@ -41,7 +41,7 @@ public class WatsonWidgetItemOverlay extends WidgetItemOverlay
             return;
         }
 
-        String itemName = itemManager.getItemComposition(itemId).getName();
+        String itemName = itemManager.getItemComposition(itemId).getMembersName();
         ClueTier clueTier = ClueTier.getClueTier(itemName);
         if(clueTier == null)
         {
