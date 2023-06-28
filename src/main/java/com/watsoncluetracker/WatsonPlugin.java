@@ -1,5 +1,8 @@
 package com.watsoncluetracker;
 
+import com.watsoncluetracker.WatsonConfig.ShowItemOverlay;
+import static com.watsoncluetracker.WatsonConfig.ShowItemOverlay.NEVER;
+import static com.watsoncluetracker.WatsonConfig.ShowItemOverlay.WATSON_HAS_CLUE;
 import javax.inject.Inject;
 
 import com.google.inject.Provides;
@@ -12,6 +15,7 @@ import net.runelite.api.events.VarbitChanged;
 import net.runelite.client.callback.ClientThread;
 import net.runelite.client.config.ConfigManager;
 import net.runelite.client.eventbus.Subscribe;
+import net.runelite.client.events.ProfileChanged;
 import net.runelite.client.plugins.Plugin;
 import net.runelite.client.plugins.PluginDescriptor;
 import net.runelite.client.ui.overlay.OverlayManager;
@@ -48,6 +52,8 @@ public class WatsonPlugin extends Plugin
 	@Inject
 	private WatsonConfig config;
 
+	@Inject ConfigManager configManager;
+
 	public static final int CLUE_SCROLL_ITEM_BASE_ID = 713;
 
 	private static final int WATSON_HAS_EASY_VARBIT = 5186;
@@ -61,10 +67,28 @@ public class WatsonPlugin extends Plugin
 	}
 
 	@Override
-	public void startUp() throws Exception
+	public void startUp()
 	{
+		migrateItemOverlayConfig();
+
 		overlayManager.add(overlay);
 		overlayManager.add(itemOverlay);
+	}
+
+	private void migrateItemOverlayConfig()
+	{
+		// Changed how a settings works. "showClueScrollItemOverlay" was the old config key.
+		String wasPreviouslyInstalled = configManager.getConfiguration(CONFIG_KEY, "showClueScrollItemOverlay");
+		if (wasPreviouslyInstalled != null) {
+			ShowItemOverlay newValue = wasPreviouslyInstalled.equals(Boolean.TRUE.toString()) ?
+				WATSON_HAS_CLUE :
+				NEVER
+			;
+			configManager.setConfiguration(CONFIG_KEY, WatsonConfig.WHEN_TO_SHOW_ITEM_OVERLAY_KEY, newValue);
+			configManager.unsetConfiguration(CONFIG_KEY, "showClueScrollItemOverlay");
+		}
+
+		configManager.setConfiguration(CONFIG_KEY, "serialVersion", 1);
 	}
 
 	@Override
@@ -72,6 +96,11 @@ public class WatsonPlugin extends Plugin
 	{
 		overlayManager.remove(overlay);
 		overlayManager.remove(itemOverlay);
+	}
+
+	@Subscribe
+	public void onProfileChanged(ProfileChanged e) {
+		migrateItemOverlayConfig();
 	}
 
 	@Subscribe

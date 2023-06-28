@@ -1,5 +1,7 @@
 package com.watsoncluetracker;
 
+import static com.watsoncluetracker.WatsonConfig.ShowItemOverlay.*;
+import java.awt.Color;
 import net.runelite.client.config.Config;
 import net.runelite.client.config.ConfigGroup;
 import net.runelite.client.config.ConfigItem;
@@ -18,22 +20,52 @@ public interface WatsonConfig extends Config
 		return true;
 	}
 
+	enum ShowItemOverlay {
+		WATSON_HAS_CLUE,
+		WATSON_NEEDS_CLUE,
+		BOTH,
+		NEVER
+	}
+
+	String WHEN_TO_SHOW_ITEM_OVERLAY_KEY = "whenToShowItemOverlay";
 	@ConfigItem(
-		keyName = "showClueScrollItemOverlay",
-		name = "Clue item overlay",
-		description = "Show icon on clues if Watson has a clue of that difficulty.",
+		keyName = WHEN_TO_SHOW_ITEM_OVERLAY_KEY,
+		name = "Item Overlay",
+		description = "When to show the 'w' icon on clues in the inventory. If watson needs the clue, it will show in gray, if he has the clue it will show in light blue.",
 		position = 2
 	)
-	default boolean showClueScrollItemOverlay()
+	default ShowItemOverlay whenToShowItemOverlay()
 	{
-		return true;
+		return BOTH;
+	}
+
+	@ConfigItem(
+		keyName = "watsonNeedsClueColor",
+		name = "Watson needs clue",
+		description = "The color for the item overlay to show that watson needs the clue.",
+		position = 3
+	)
+	default Color watsonNeedsClueColor()
+	{
+		return Color.LIGHT_GRAY.darker();
+	}
+
+	@ConfigItem(
+		keyName = "watsonHasClueColor",
+		name = "Watson has clue",
+		description = "The color for the item overlay to show that watson already has the clue.",
+		position = 4
+	)
+	default Color watsonHasClueColor()
+	{
+		return new Color(0x59a8eb);
 	}
 
 	@ConfigItem(
 		keyName = "watsonChatCommand",
 		name = "::watson",
 		description = "Enables ::watson command to check which clues Watson is holding on to.",
-		position = 3
+		position = 5
 	)
 	default boolean watsonChatCommand()
 	{
