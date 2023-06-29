@@ -2,6 +2,7 @@ package com.watsoncluetracker;
 
 import com.google.inject.Inject;
 import com.watsoncluetracker.WatsonConfig.ShowItemOverlay;
+import static com.watsoncluetracker.WatsonConfig.ShowItemOverlay.ALL_TIERS;
 import static com.watsoncluetracker.WatsonConfig.ShowItemOverlay.NEVER;
 import static com.watsoncluetracker.WatsonConfig.ShowItemOverlay.WATSON_HAS_CLUE;
 import static com.watsoncluetracker.WatsonConfig.ShowItemOverlay.WATSON_NEEDS_CLUE;
@@ -58,12 +59,27 @@ public class WatsonWidgetItemOverlay extends WidgetItemOverlay
 			return;
 		}
 
-		graphics.setFont(FontManager.getRunescapeSmallFont());
-		final TextComponent textComponent = new TextComponent();
 		final Rectangle bounds = widgetItem.getCanvasBounds();
-		textComponent.setPosition(new Point(bounds.x, bounds.y + (int)bounds.getHeight()));
-		textComponent.setText("w");
-		textComponent.setColor(watsonHasClue ? config.watsonHasClueColor() : config.watsonNeedsClueColor());
-		textComponent.render(graphics);
+		if (showItemOverlay == ALL_TIERS) {
+			int x = bounds.x + 3;
+			for (ClueTier tier : ClueTier.values())
+			{
+				graphics.setColor(tier.getColor(true));
+				if (plugin.watsonHasClue(tier))
+				{
+					graphics.fillRect(x, bounds.y + 24, 5, 5);
+				} else {
+					graphics.drawRect(x, bounds.y + 24, 4, 4);
+				}
+				x += 7;
+			}
+		} else {
+			graphics.setFont(FontManager.getRunescapeSmallFont());
+			final TextComponent textComponent = new TextComponent();
+			textComponent.setPosition(new Point(bounds.x, bounds.y + (int) bounds.getHeight()));
+			textComponent.setText("w");
+			textComponent.setColor(watsonHasClue ? config.watsonHasClueColor() : config.watsonNeedsClueColor());
+			textComponent.render(graphics);
+		}
 	}
 }

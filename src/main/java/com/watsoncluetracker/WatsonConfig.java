@@ -24,14 +24,15 @@ public interface WatsonConfig extends Config
 		WATSON_HAS_CLUE,
 		WATSON_NEEDS_CLUE,
 		BOTH,
-		NEVER
+		NEVER,
+		ALL_TIERS
 	}
 
 	String WHEN_TO_SHOW_ITEM_OVERLAY_KEY = "whenToShowItemOverlay";
 	@ConfigItem(
 		keyName = WHEN_TO_SHOW_ITEM_OVERLAY_KEY,
 		name = "Item Overlay",
-		description = "When to show the 'w' icon on clues in the inventory. If watson needs the clue, it will show in gray, if he has the clue it will show in light blue.",
+		description = "When to show the 'w' icon on clues in the inventory. If watson needs the clue, it will show in gray, if he has the clue it will show in light blue. \"All tiers\" shows the status of all clue tiers on each clue.",
 		position = 2
 	)
 	default ShowItemOverlay whenToShowItemOverlay()
