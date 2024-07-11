@@ -3,12 +3,14 @@ package com.watsoncluetracker;
 import com.watsoncluetracker.WatsonConfig.ShowItemOverlay;
 import static com.watsoncluetracker.WatsonConfig.ShowItemOverlay.NEVER;
 import static com.watsoncluetracker.WatsonConfig.ShowItemOverlay.WATSON_HAS_CLUE;
+import java.util.Set;
 import javax.inject.Inject;
 
 import com.google.inject.Provides;
 import lombok.extern.slf4j.Slf4j;
 import net.runelite.api.ChatMessageType;
 import net.runelite.api.Client;
+import net.runelite.api.ItemID;
 import net.runelite.api.Varbits;
 import net.runelite.api.events.CommandExecuted;
 import net.runelite.api.events.VarbitChanged;
@@ -54,7 +56,13 @@ public class WatsonPlugin extends Plugin
 
 	@Inject ConfigManager configManager;
 
-	public static final int CLUE_SCROLL_ITEM_BASE_ID = 713;
+	public static final Set<Integer> CLUE_SCROLL_BASE_IDS = Set.of(
+		ItemID.CLUE_SCROLL_EASY,
+		ItemID.CLUE_SCROLL_MEDIUM,
+		ItemID.CLUE_SCROLL_HARD,
+		ItemID.CLUE_SCROLL_ELITE,
+		ItemID.CLUE_SCROLL_MASTER
+	);
 
 	private static final int WATSON_HAS_EASY_VARBIT = 5186;
 	private static final int WATSON_HAS_MEDIUM_VARBIT = 5187;

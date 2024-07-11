@@ -39,7 +39,7 @@ public class WatsonWidgetItemOverlay extends WidgetItemOverlay
 		if (showItemOverlay == NEVER) return;
 
         int baseItemId = ItemVariationMapping.map(itemId);
-        if(baseItemId != WatsonPlugin.CLUE_SCROLL_ITEM_BASE_ID)
+        if(!WatsonPlugin.CLUE_SCROLL_BASE_IDS.contains(baseItemId))
         {
             return;
         }

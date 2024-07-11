@@ -70,7 +70,7 @@ public class WatsonOverlay extends Overlay
 		}
 
 		int baseItemId = ItemVariationMapping.map(itemId);
-		if(baseItemId != WatsonPlugin.CLUE_SCROLL_ITEM_BASE_ID)
+		if(!WatsonPlugin.CLUE_SCROLL_BASE_IDS.contains(baseItemId))
 		{
 			return null;
 		}
