@@ -3,8 +3,9 @@ package com.watsoncluetracker;
 import net.runelite.api.Client;
 import net.runelite.api.ItemID;
 import net.runelite.api.MenuEntry;
+import net.runelite.api.widgets.InterfaceID;
 import net.runelite.api.widgets.Widget;
-import net.runelite.api.widgets.WidgetInfo;
+import net.runelite.api.widgets.WidgetUtil;
 import net.runelite.client.game.ItemManager;
 import net.runelite.client.game.ItemVariationMapping;
 import net.runelite.client.ui.overlay.Overlay;
@@ -53,13 +54,13 @@ public class WatsonOverlay extends Overlay
 			return null;
 		}
 
-		final int widgetGroupId = WidgetInfo.TO_GROUP(widget.getId());
 		int itemId = -1;
 
-		if(widget.getId() == WidgetInfo.INVENTORY.getId()
-				|| widgetGroupId == WidgetInfo.EQUIPMENT_INVENTORY_ITEMS_CONTAINER.getGroupId()
-				|| widget.getId() == WidgetInfo.BANK_ITEM_CONTAINER.getId()
-				|| widgetGroupId == WidgetInfo.BANK_INVENTORY_ITEMS_CONTAINER.getGroupId())
+		final int widgetGroupId = WidgetUtil.componentToInterface(widget.getId());
+		if(widgetGroupId == InterfaceID.INVENTORY
+				|| widgetGroupId == InterfaceID.EQUIPMENT
+				|| widgetGroupId == InterfaceID.BANK
+				|| widgetGroupId == InterfaceID.BANK_INVENTORY)
 		{
 			itemId = widget.getItemId();
 		}
