@@ -4,32 +4,37 @@ import lombok.AllArgsConstructor;
 import lombok.Getter;
 
 import java.awt.Color;
-import java.util.Arrays;
-import java.util.Map;
-import java.util.stream.Collectors;
 
 @AllArgsConstructor
 @Getter
 public enum ClueTier
 {
-	EASY("Clue scroll (easy)", new Color(0x32a836), new Color(0x32a836).darker()),
-	MEDIUM("Clue scroll (medium)", new Color(0x3fcc8f), new Color(0x3fcc8f).darker()),
-	HARD("Clue scroll (hard)", new Color(0xa641ba), new Color(0xa641ba)),
-	ELITE("Clue scroll (elite)", new Color(0xc4b847), new Color(0xc4b847).darker());
+	EASY(new Color(0x32a836), new Color(0x32a836).darker()),
+	MEDIUM(new Color(0x3fcc8f), new Color(0x3fcc8f).darker()),
+	HARD(new Color(0xa641ba), new Color(0xa641ba)),
+	ELITE(new Color(0xc4b847), new Color(0xc4b847).darker()),
+	MASTER(null, null);
 
-	private final String clueName;
 	private final Color colorTransparent;
 	private final Color colorOpaque;
 
-	private static final Map<String, ClueTier> map;
-	static {
-		map = Arrays.stream(values())
-				.collect(Collectors.toMap(e -> e.clueName, e -> e));
-	}
-
-	public static ClueTier getClueTier(String name)
+	/**
+	 * Returns the tier for non-beginner clue scrolls, geodes, bottles, nests, and scroll boxes.
+	 */
+	public static ClueTier getClueTier(String itemName)
 	{
-		return map.get(name);
+		if (itemName.endsWith(")") && (itemName.startsWith("Clue") || itemName.startsWith("Scroll box"))) {
+			return
+				itemName.endsWith("(easy)") ? ClueTier.EASY :
+				itemName.endsWith("(medium)") ? ClueTier.MEDIUM :
+				itemName.endsWith("(hard)") ? ClueTier.HARD :
+				itemName.endsWith("(elite)") ? ClueTier.ELITE :
+				itemName.endsWith("(master)") ? ClueTier.MASTER :
+				null
+			;
+		} else {
+			return null;
+		}
 	}
 
 	public Color getColor(boolean transparentChatbox)

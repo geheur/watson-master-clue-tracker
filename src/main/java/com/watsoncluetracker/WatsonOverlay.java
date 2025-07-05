@@ -1,13 +1,11 @@
 package com.watsoncluetracker;
 
 import net.runelite.api.Client;
-import net.runelite.api.ItemID;
 import net.runelite.api.MenuEntry;
 import net.runelite.api.widgets.InterfaceID;
 import net.runelite.api.widgets.Widget;
 import net.runelite.api.widgets.WidgetUtil;
 import net.runelite.client.game.ItemManager;
-import net.runelite.client.game.ItemVariationMapping;
 import net.runelite.client.ui.overlay.Overlay;
 import net.runelite.client.ui.overlay.tooltip.Tooltip;
 import net.runelite.client.ui.overlay.tooltip.TooltipManager;
@@ -69,15 +67,8 @@ public class WatsonOverlay extends Overlay
 			return null;
 		}
 
-		int baseItemId = ItemVariationMapping.map(itemId);
-		if(!WatsonPlugin.CLUE_SCROLL_BASE_IDS.contains(baseItemId))
-		{
-			return null;
-		}
-
-		String itemName = itemManager.getItemComposition(itemId).getMembersName();
-		ClueTier clueTier = ClueTier.getClueTier(itemName);
-		if(clueTier == null && itemId != ItemID.CLUE_SCROLL_MASTER)
+		ClueTier clueTier = ClueTier.getClueTier(itemManager.getItemComposition(itemId).getMembersName());
+		if(clueTier == null)
 		{
 			return null;
 		}

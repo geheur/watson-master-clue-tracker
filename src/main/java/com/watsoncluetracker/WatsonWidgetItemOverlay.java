@@ -8,7 +8,6 @@ import static com.watsoncluetracker.WatsonConfig.ShowItemOverlay.WATSON_HAS_CLUE
 import static com.watsoncluetracker.WatsonConfig.ShowItemOverlay.WATSON_NEEDS_CLUE;
 import net.runelite.api.widgets.WidgetItem;
 import net.runelite.client.game.ItemManager;
-import net.runelite.client.game.ItemVariationMapping;
 import net.runelite.client.ui.FontManager;
 import net.runelite.client.ui.overlay.WidgetItemOverlay;
 import net.runelite.client.ui.overlay.components.TextComponent;
@@ -38,15 +37,8 @@ public class WatsonWidgetItemOverlay extends WidgetItemOverlay
 		ShowItemOverlay showItemOverlay = config.whenToShowItemOverlay();
 		if (showItemOverlay == NEVER) return;
 
-        int baseItemId = ItemVariationMapping.map(itemId);
-        if(!WatsonPlugin.CLUE_SCROLL_BASE_IDS.contains(baseItemId))
-        {
-            return;
-        }
-
-        String itemName = itemManager.getItemComposition(itemId).getMembersName();
-        ClueTier clueTier = ClueTier.getClueTier(itemName);
-        if(clueTier == null)
+		ClueTier clueTier = ClueTier.getClueTier(itemManager.getItemComposition(itemId).getMembersName());
+		if(clueTier == null || clueTier == ClueTier.MASTER)
         {
             return;
         }
@@ -64,6 +56,7 @@ public class WatsonWidgetItemOverlay extends WidgetItemOverlay
 			int x = bounds.x + 3;
 			for (ClueTier tier : ClueTier.values())
 			{
+				if (tier == ClueTier.MASTER) continue;
 				graphics.setColor(tier.getColor(true));
 				if (plugin.watsonHasClue(tier))
 				{
