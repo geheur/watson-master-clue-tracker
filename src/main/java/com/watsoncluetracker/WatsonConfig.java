@@ -37,7 +37,7 @@ public interface WatsonConfig extends Config
 	)
 	default ShowItemOverlay whenToShowItemOverlay()
 	{
-		return BOTH;
+		return ALL_TIERS;
 	}
 
 	@ConfigItem(
